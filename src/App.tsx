@@ -8,6 +8,10 @@ import AppRoutes from './routes';
 function App() {
   const { isAuthenticated, loading, error } = useAuth();
 
+  const handleClose = () => {
+    window.close();
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -26,11 +30,11 @@ function App() {
               Error de autenticación
             </h2>
             <p className="text-[15px] text-gray-600 mb-6">
-              Esta aplicación debe abrirse desde la aplicación principal
+              {error || 'Esta aplicación debe abrirse desde la aplicación principal'}
             </p>
             <div className="space-y-2 w-full">
               <button
-                onClick={() => window.close()}
+                onClick={handleClose}
                 className="w-full py-2.5 px-4 bg-gray-50 text-gray-900 rounded-lg hover:bg-gray-100 transition-colors text-[15px]"
               >
                 Cerrar ventana

@@ -103,6 +103,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const initAuth = () => {
+      // Verificar si hay un token válido almacenado
       const storedToken = getIdToken();
       if (storedToken && hasValidToken(storedToken)) {
         setState({
@@ -112,6 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           error: null,
         });
       } else {
+        // Si no hay token válido, solicitar uno a la aplicación padre
         requestTokenFromOpener();
       }
     };
@@ -121,7 +123,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Configurar refresh periódico
     const refreshInterval = setInterval(() => {
-      if (state.idToken) {
+      const currentToken = getIdToken();
+      if (currentToken && hasValidToken(currentToken)) {
         window.opener?.postMessage(
           {
             type: 'TOKEN_REFRESH_REQUEST',
@@ -129,14 +132,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           },
           '*'
         );
+      } else {
+        requestTokenFromOpener();
       }
-    }, 4 * 60 * 1000);
+    }, 4 * 60 * 1000); // Refresh cada 4 minutos
 
     return () => {
       window.removeEventListener('message', handleMessage);
       clearInterval(refreshInterval);
     };
-  }, [state.idToken]);
+  }, []);
 
   return (
     <AuthContext.Provider value={state}>

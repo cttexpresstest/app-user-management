@@ -23,7 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
-/boltzip
-*.zip
+# Environment variables
 .env
 
+# Bolt specific
+/boltzip
+*.zip

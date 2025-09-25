@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// Configuración del baseURL para la API - Actualizado
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8081/api';
+console.log('🚀 Axios baseURL configurado:', baseURL);
 
 const api = axios.create({
   baseURL,
@@ -11,12 +13,14 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  // Obtener token real del sessionStorage
   const token = sessionStorage.getItem('idToken');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 }, (error) => {
+  console.error('Request interceptor error:', error);
   return Promise.reject(error);
 });
 
@@ -24,7 +28,7 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      // Token expirado o inválido
+      // Token expired or invalid
       window.opener?.postMessage(
         {
           type: 'TOKEN_EXPIRED',
@@ -32,6 +36,9 @@ api.interceptors.response.use(
         },
         '*'
       );
+      
+      // Limpiar el token expirado
+      sessionStorage.removeItem('idToken');
     }
     return Promise.reject(error);
   }

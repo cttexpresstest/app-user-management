@@ -19,7 +19,15 @@ export interface Role {
 
 export interface User {
   user_id: string;
+  email?: string;
   roles: string[];
+  hub_codes?: string[];
+  audit?: {
+    created_by?: string;
+    created_at?: string;
+    updated_by?: string;
+    updated_at?: string;
+  };
 }
 
 export interface AuthResponse {
