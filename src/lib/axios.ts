@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Configuración del baseURL para la API - Actualizado
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8081/api';
+const baseURL = import.meta.env.VITE_API_URL || 'https://staging-apps-01-pub.cttexpress.com/corporate-app-main/api';
 console.log('🚀 Axios baseURL configurado:', baseURL);
 
 const api = axios.create({

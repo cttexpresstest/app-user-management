@@ -36,7 +36,12 @@ function Layout() {
               <div className="flex items-center">
                 <Settings className="w-8 h-8 text-primary-600" />
                 <div className="ml-3">
-                  <h1 className="text-xl font-semibold text-gray-900">User Management</h1>
+                  <div className="flex items-center space-x-2">
+                    <h1 className="text-xl font-semibold text-gray-900">User Management</h1>
+                    <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
+                      v1.0.2
+                    </span>
+                  </div>
                   <p className="text-sm text-gray-500">Sistema de gestión de usuarios</p>
                 </div>
               </div>
