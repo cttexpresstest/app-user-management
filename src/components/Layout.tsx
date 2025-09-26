@@ -38,8 +38,8 @@ function Layout() {
                 <div className="ml-3">
                   <div className="flex items-center space-x-2">
                     <h1 className="text-xl font-semibold text-gray-900">User Management</h1>
-                    <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
-                      v1.0.2
+                    <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
+                      v1.0.3
                     </span>
                   </div>
                   <p className="text-sm text-gray-500">Sistema de gestión de usuarios</p>
