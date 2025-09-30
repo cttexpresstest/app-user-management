@@ -16,7 +16,7 @@ function Layout() {
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 flex flex-col">
       {/* Library Header: renders its own <header> with bg/border and container */}
-      <Header iconComponent={Settings} title="User Management" className="shadow-none" />
+      <Header iconComponent={Settings} title="User Management" version="v1.0.5" className="shadow-none" />
 
       {/* Navigation Tabs (sibling of header to avoid nested header conflicts) */}
       <div className="bg-white border-b border-gray-200">
