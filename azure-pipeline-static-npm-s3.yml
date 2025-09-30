@@ -1,0 +1,41 @@
+# Node.js with React
+# Build a Node.js project that uses React.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+      - master
+      - staging 
+      - dev
+  paths:
+    exclude:
+      - '*.md'
+      - '*.yml'
+      - '*.yaml'
+      - '.gitignore'
+ 
+pool:
+  vmImage: ubuntu-latest
+  # https://docs.microsoft.com/es-es/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml
+  #
+
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: ctt-devops/ctt-devops # <project>/<repo>
+      ref: main  # explicit branch reference
+
+variables:
+  - template: MANIFEST/static-web/npmS3/vars-template.yml@templates  
+  - ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/main')) }}:
+    - group: app-user-management.env.production
+  - ${{ else }}: 
+    - group: app-user-management.env.staging
+
+steps:
+  - template: MANIFEST/static-web/npmS3/template.yml@templates

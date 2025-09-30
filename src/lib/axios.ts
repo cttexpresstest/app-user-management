@@ -2,8 +2,8 @@ import { getIdToken } from '@ctt-library/auth';
 import axios from 'axios';
 
 // Configuración del baseURL para la API - Actualizado
-const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081/api';
-console.log(' Axios baseURL configurado:', baseURL);
+const baseURL = import.meta.env.VITE_API_URL || 'https://staging-apps-01-pub.cttexpress.com/corporate-app-main/api';
+console.log('🚀 Axios baseURL configurado:', baseURL);
 
 const api = axios.create({
   baseURL,
