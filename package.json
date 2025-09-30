@@ -11,11 +11,10 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@ctt-library/alert": "*",
-    "@ctt-library/auth": "*",
-    "@ctt-library/header": "*",
-    "@ctt-library/modal": "*",
-    "@ctt-library/styles": "*",
+    "@ctt-library/auth": "0.0.22",
+    "@ctt-library/header": "^0.0.17",
+    "@ctt-library/modal": "0.0.6",
+    "@ctt-library/styles": "0.0.6",
     "@tanstack/react-query": "^5.90.2",
     "axios": "^1.12.2",
     "formik": "^2.4.6",
