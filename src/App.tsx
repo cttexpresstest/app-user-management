@@ -1,13 +1,10 @@
-import React from 'react';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
+import { useAuth } from '@ctt-library/auth';
 import { XCircle } from 'lucide-react';
+
 import AppRoutes from './routes';
 
 function App() {
   const { isAuthenticated, loading, error } = useAuth();
-
   const handleClose = () => {
     window.close();
   };

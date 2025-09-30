@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Edit, Search, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import api from '../lib/axios';
-import type { Application } from '../types';
-import AddApplicationModal from '../components/applications/AddApplicationModal';
-import { Edit, Trash2, Search } from 'lucide-react';
+import { useIntl } from 'react-intl';
+
+import AddApplicationModal from '../../components/applications/AddApplicationModal';
+import api from '../../lib/axios';
+import type { Application } from '../../types';
 
 interface ApplicationFormData {
   app_code: string;
@@ -15,6 +17,7 @@ interface ApplicationFormData {
 }
 
 function Applications() {
+  const intl = useIntl();
   const queryClient = useQueryClient();
   const [editingApplication, setEditingApplication] = useState<Application | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -102,7 +105,6 @@ function Applications() {
     }
   };
 
-  // Filtrar aplicaciones basado en el término de búsqueda
   const filteredApplications = applications?.filter(app => {
     if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
@@ -118,7 +120,7 @@ function Applications() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-primary-600">Loading...</div>
+        <div className="text-primary-600">{intl.formatMessage({ id: 'applications.loading' })}</div>
       </div>
     );
   }
@@ -126,7 +128,7 @@ function Applications() {
   if (error) {
     return (
       <div className="bg-red-50 p-4 rounded-md">
-        <p className="text-red-800">Error loading applications</p>
+        <p className="text-red-800">{intl.formatMessage({ id: 'applications.error' })}</p>
       </div>
     );
   }
@@ -135,7 +137,7 @@ function Applications() {
     <>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Applications</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{intl.formatMessage({ id: 'applications.title' })}</h1>
           <button
             onClick={() => {
               setEditingApplication(null);
@@ -144,18 +146,17 @@ function Applications() {
             }}
             className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
           >
-            Add Application
+            {intl.formatMessage({ id: 'applications.add' })}
           </button>
         </div>
 
-        {/* Buscador rápido */}
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-gray-400" />
           </div>
           <input
             type="text"
-            placeholder="Search applications by name, code, description, URL or status..."
+            placeholder={intl.formatMessage({ id: 'applications.search.placeholder' })}
             className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -167,19 +168,19 @@ function Applications() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ width: '25%' }}>
-                  Name
+                  {intl.formatMessage({ id: 'applications.table.name' })}
                 </th>
                 <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ width: '20%' }}>
-                  Code
+                  {intl.formatMessage({ id: 'applications.table.code' })}
                 </th>
                 <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ width: '10%' }}>
-                  Status
+                  {intl.formatMessage({ id: 'applications.table.status' })}
                 </th>
                 <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ width: '25%' }}>
-                  URL
+                  {intl.formatMessage({ id: 'applications.table.url' })}
                 </th>
                 <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ width: '20%' }}>
-                  Actions
+                  {intl.formatMessage({ id: 'applications.table.actions' })}
                 </th>
               </tr>
             </thead>
@@ -221,7 +222,7 @@ function Applications() {
                         title="Edit application"
                       >
                         <Edit className="w-4 h-4 mr-1" />
-                        Edit
+                        {intl.formatMessage({ id: 'applications.action.edit' })}
                       </button>
                       <button
                         onClick={() => handleDeleteClick(app)}
@@ -230,7 +231,7 @@ function Applications() {
                         title="Delete application"
                       >
                         <Trash2 className="w-4 h-4 mr-1" />
-                        Delete
+                        {intl.formatMessage({ id: 'applications.action.delete' })}
                       </button>
                     </div>
                   </td>

@@ -1,9 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
+        // Colores personalizados de la app (los corporativos vienen de @ctt-library/styles)
         primary: {
           50: '#fff1f1',
           100: '#ffe1e1',
@@ -20,5 +20,4 @@ export default {
       },
     },
   },
-  plugins: [],
 };

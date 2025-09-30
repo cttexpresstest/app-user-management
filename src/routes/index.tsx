@@ -1,9 +1,9 @@
-import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+
 import Layout from '../components/Layout';
-import Applications from '../pages/Applications';
-import Roles from '../pages/Roles';
-import Users from '../pages/Users';
+import { Applications } from '../features/applications';
+import { Roles } from '../features/roles';
+import { Users } from '../features/users';
 
 function AppRoutes() {
   return (

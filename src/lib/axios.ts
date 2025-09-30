@@ -1,8 +1,9 @@
+import { getIdToken } from '@ctt-library/auth';
 import axios from 'axios';
 
 // Configuración del baseURL para la API - Actualizado
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8081/api';
-console.log('🚀 Axios baseURL configurado:', baseURL);
+const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081/api';
+console.log(' Axios baseURL configurado:', baseURL);
 
 const api = axios.create({
   baseURL,
@@ -13,8 +14,8 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  // Obtener token real del sessionStorage
-  const token = sessionStorage.getItem('idToken');
+  // Obtener token desde la librería de autenticación
+  const token = getIdToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

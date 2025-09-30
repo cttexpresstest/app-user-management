@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
-import api from '../lib/axios';
-import type { Role, Application } from '../types';
-import RoleCard from '../components/roles/RoleCard';
-import AddRoleModal from '../components/roles/AddRoleModal';
-import AddPermissionModal from '../components/roles/AddPermissionModal';
 import { Search } from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useIntl } from 'react-intl';
+
+import AddPermissionModal from '../../components/roles/AddPermissionModal';
+import AddRoleModal from '../../components/roles/AddRoleModal';
+import RoleCard from '../../components/roles/RoleCard';
+import api from '../../lib/axios';
+import type { Application, Role } from '../../types';
 
 interface RoleFormData {
   role_id: string;
@@ -18,6 +20,7 @@ interface AddPermissionFormData {
 }
 
 export default function Roles() {
+  const intl = useIntl();
   const queryClient = useQueryClient();
   const [editingRole, setEditingRole] = useState<string | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -230,20 +233,16 @@ export default function Roles() {
     resetPermission();
   };
 
-  // Filtrar roles basado en el término de búsqueda
   const filteredRoles = roles?.filter(role => {
     if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
 
-    // Buscar en el ID del rol
     const roleIdMatch = role.role_id?.toLowerCase().includes(searchLower);
 
-    // Buscar en los códigos de aplicaciones de los permisos
     const permissionMatch = role.permissions?.some(permission =>
       permission.app_code?.toLowerCase().includes(searchLower)
     );
 
-    // Buscar en los nombres de las aplicaciones asociadas
     const appNameMatch = role.permissions?.some(permission => {
       const app = applications.find(app => app.app_code === permission.app_code);
       return app?.name?.toLowerCase().includes(searchLower);
@@ -255,7 +254,7 @@ export default function Roles() {
   if (rolesLoading || appsLoading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-primary-600">Loading...</div>
+        <div className="text-primary-600">{intl.formatMessage({ id: 'roles.loading' })}</div>
       </div>
     );
   }
@@ -264,8 +263,8 @@ export default function Roles() {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="bg-red-50 p-4 rounded-md text-red-800">
-          {isRolesError && <p>Error loading roles: {rolesError?.message}</p>}
-          {isAppsError && <p>Error loading applications: {appsError?.message}</p>}
+          {isRolesError && <p>{intl.formatMessage({ id: 'roles.error' })}: {rolesError?.message}</p>}
+          {isAppsError && <p>{intl.formatMessage({ id: 'roles.apps.error' })}: {appsError?.message}</p>}
           <button 
             onClick={() => {
               queryClient.invalidateQueries({ queryKey: ['roles'] });
@@ -273,7 +272,7 @@ export default function Roles() {
             }}
             className="mt-2 px-4 py-2 bg-red-100 text-red-800 rounded-md hover:bg-red-200"
           >
-            Retry
+            {intl.formatMessage({ id: 'roles.retry' })}
           </button>
         </div>
       </div>
@@ -284,7 +283,7 @@ export default function Roles() {
     <>
       <div className="space-y-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Roles</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{intl.formatMessage({ id: 'roles.title' })}</h1>
           <button
             onClick={() => {
               setEditingRole(null);
@@ -293,18 +292,17 @@ export default function Roles() {
             }}
             className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
           >
-            Add Role
+            {intl.formatMessage({ id: 'roles.add' })}
           </button>
         </div>
 
-        {/* Buscador rápido */}
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-gray-400" />
           </div>
           <input
             type="text"
-            placeholder="Search roles by name, application code, or application name..."
+            placeholder={intl.formatMessage({ id: 'roles.search.placeholder' })}
             className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -363,4 +361,3 @@ export default function Roles() {
     </>
   );
 }
-

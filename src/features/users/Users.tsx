@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Edit, Search, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import api from '../lib/axios';
-import type { User, Role } from '../types';
-import AddUserModal from '../components/users/AddUserModal';
-import { Search, Trash2, Edit } from 'lucide-react';
+import { useIntl } from 'react-intl';
+
+import AddUserModal from '../../components/users/AddUserModal';
+import api from '../../lib/axios';
+import type { Role, User } from '../../types';
 
 interface UserFormData {
   user_id: string;
@@ -14,6 +16,7 @@ interface UserFormData {
 }
 
 function Users() {
+  const intl = useIntl();
   const queryClient = useQueryClient();
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -39,9 +42,13 @@ function Users() {
 
   const createUserMutation = useMutation({
     mutationFn: async (userData: UserFormData) => {
-      const hubCodesArray = typeof userData.hub_codes === 'string'
-        ? userData.hub_codes.split(',').map(s => s.trim()).filter(Boolean)
-        : userData.hub_codes || [];
+      const raw = userData.hub_codes as unknown as string | string[];
+      const hubCodesArray = Array.isArray(raw)
+        ? raw
+        : (raw || '')
+            .split(',')
+            .map((s: string) => s.trim())
+            .filter(Boolean);
 
       const response = await api.post('/users', {
         user_id: userData.user_id,
@@ -60,9 +67,13 @@ function Users() {
 
   const updateUserMutation = useMutation({
     mutationFn: async (userData: UserFormData) => {
-      const hubCodesArray = typeof userData.hub_codes === 'string'
-        ? userData.hub_codes.split(',').map(s => s.trim()).filter(Boolean)
-        : userData.hub_codes || [];
+      const raw = userData.hub_codes as unknown as string | string[];
+      const hubCodesArray = Array.isArray(raw)
+        ? raw
+        : (raw || '')
+            .split(',')
+            .map((s: string) => s.trim())
+            .filter(Boolean);
 
       const response = await api.put(`/users/${editingUser?.email || editingUser?.user_id}`, {
         email: userData.email,
@@ -94,7 +105,7 @@ function Users() {
     setValue('user_id', user.user_id);
     setValue('email', user.email || '');
     setValue('roles', user.roles || []);
-    setValue('hub_codes', user.hub_codes?.join(', ') || '');
+    setValue('hub_codes', user.hub_codes || []);
     setIsAddModalOpen(true);
   };
 
@@ -125,7 +136,7 @@ function Users() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-primary-600">Loading...</div>
+        <div className="text-primary-600">{intl.formatMessage({ id: 'users.loading' })}</div>
       </div>
     );
   }
@@ -133,7 +144,7 @@ function Users() {
   if (error) {
     return (
       <div className="bg-red-50 p-4 rounded-md">
-        <p className="text-red-800">Error loading users</p>
+        <p className="text-red-800">{intl.formatMessage({ id: 'users.error' })}</p>
       </div>
     );
   }
@@ -142,7 +153,7 @@ function Users() {
     <>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Users</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{intl.formatMessage({ id: 'users.title' })}</h1>
           <button
             onClick={() => {
               setEditingUser(null);
@@ -151,7 +162,7 @@ function Users() {
             }}
             className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
           >
-            Add User
+            {intl.formatMessage({ id: 'users.add' })}
           </button>
         </div>
 
@@ -161,7 +172,7 @@ function Users() {
           </div>
           <input
             type="text"
-            placeholder="Search users by email, ID, or role..."
+            placeholder={intl.formatMessage({ id: 'users.search.placeholder' })}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
@@ -172,25 +183,17 @@ function Users() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Roles
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Hub Codes
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{intl.formatMessage({ id: 'users.table.email' })}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{intl.formatMessage({ id: 'users.table.roles' })}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{intl.formatMessage({ id: 'users.table.hubcodes' })}</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{intl.formatMessage({ id: 'users.table.actions' })}</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredUsers.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
-                    {searchTerm ? 'No users found matching your search.' : 'No users found.'}
+                    {searchTerm ? intl.formatMessage({ id: 'users.none.search' }) : intl.formatMessage({ id: 'users.none' })}
                   </td>
                 </tr>
               ) : (
@@ -234,7 +237,7 @@ function Users() {
                         className="text-primary-600 hover:text-primary-800 mr-3 inline-flex items-center"
                       >
                         <Edit className="w-4 h-4 mr-1" />
-                        Edit
+                        {intl.formatMessage({ id: 'common.edit' })}
                       </button>
                       <button
                         onClick={() => handleDeleteClick(user)}
@@ -242,7 +245,7 @@ function Users() {
                         disabled={deleteUserMutation.isPending}
                       >
                         <Trash2 className="w-4 h-4 mr-1" />
-                        Delete
+                        {intl.formatMessage({ id: 'common.delete' })}
                       </button>
                     </td>
                   </tr>
