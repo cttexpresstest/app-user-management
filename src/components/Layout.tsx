@@ -1,5 +1,5 @@
-import { useAuth } from '@ctt-library/auth';
-import { Header } from '@ctt-library/header';
+import { useAuth } from '../mocks/@ctt-library/auth';
+import { Header } from '../mocks/@ctt-library/header';
 import { AppWindow, Settings, Shield, Users } from 'lucide-react';
 import { Outlet, NavLink } from 'react-router-dom';
 

@@ -1,4 +1,4 @@
-import { AuthProvider } from '@ctt-library/auth';
+import { AuthProvider } from '../../mocks/@ctt-library/auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { IntlProvider } from 'react-intl';

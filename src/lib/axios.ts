@@ -1,4 +1,4 @@
-import { getIdToken } from '@ctt-library/auth';
+import { getIdToken } from '../mocks/@ctt-library/auth';
 import axios from 'axios';
 
 // Configuración del baseURL para la API - Actualizado

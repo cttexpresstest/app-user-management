@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Search } from 'lucide-react';
+import { Search, Shield } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
@@ -30,7 +30,7 @@ export default function Roles() {
   const [addPermissionError, setAddPermissionError] = useState<string | null>(null);
   const [addPermissionSuccess, setAddPermissionSuccess] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<RoleFormData>();
   const { register: registerPermission, handleSubmit: handleSubmitPermission, reset: resetPermission } = useForm<AddPermissionFormData>();
 
@@ -46,9 +46,9 @@ export default function Roles() {
     });
   };
 
-  const { 
+  const {
     data: roles = [],
-    isLoading: rolesLoading, 
+    isLoading: rolesLoading,
     error: rolesError,
     isError: isRolesError
   } = useQuery<Role[]>({
@@ -64,7 +64,7 @@ export default function Roles() {
     },
   });
 
-  const { 
+  const {
     data: applications = [],
     isLoading: appsLoading,
     error: appsError,
@@ -133,7 +133,7 @@ export default function Roles() {
       }
     },
     onSuccess: (roleId) => {
-      queryClient.setQueryData<Role[]>(['roles'], (oldRoles = []) => 
+      queryClient.setQueryData<Role[]>(['roles'], (oldRoles = []) =>
         oldRoles.filter(role => role.role_id !== roleId)
       );
     },
@@ -150,8 +150,8 @@ export default function Roles() {
       }
     },
     onSuccess: ({ roleId, appCode }) => {
-      queryClient.setQueryData<Role[]>(['roles'], (oldRoles = []) => 
-        oldRoles.map(role => 
+      queryClient.setQueryData<Role[]>(['roles'], (oldRoles = []) =>
+        oldRoles.map(role =>
           role.role_id === roleId
             ? {
                 ...role,
@@ -218,9 +218,9 @@ export default function Roles() {
     if (selectedRoleId) {
       setAddPermissionSuccess(false);
       setAddPermissionError(null);
-      addPermissionMutation.mutate({ 
-        roleId: selectedRoleId, 
-        appCode: data.app_code 
+      addPermissionMutation.mutate({
+        roleId: selectedRoleId,
+        appCode: data.app_code
       });
     }
   };
@@ -253,24 +253,27 @@ export default function Roles() {
 
   if (rolesLoading || appsLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-primary-600">{intl.formatMessage({ id: 'roles.loading' })}</div>
+      <div className="flex items-center justify-center h-full min-h-[400px]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+          <div className="text-primary-600 font-medium">{intl.formatMessage({ id: 'roles.loading' })}</div>
+        </div>
       </div>
     );
   }
 
   if (isRolesError || isAppsError) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="bg-red-50 p-4 rounded-md text-red-800">
-          {isRolesError && <p>{intl.formatMessage({ id: 'roles.error' })}: {rolesError?.message}</p>}
-          {isAppsError && <p>{intl.formatMessage({ id: 'roles.apps.error' })}: {appsError?.message}</p>}
-          <button 
+      <div className="flex items-center justify-center h-full min-h-[400px]">
+        <div className="bg-gradient-to-r from-red-50 to-red-100 p-6 rounded-xl border border-red-200 shadow-sm animate-fadeIn">
+          {isRolesError && <p className="text-red-800 font-medium mb-2">{intl.formatMessage({ id: 'roles.error' })}: {rolesError?.message}</p>}
+          {isAppsError && <p className="text-red-800 font-medium mb-2">{intl.formatMessage({ id: 'roles.apps.error' })}: {appsError?.message}</p>}
+          <button
             onClick={() => {
               queryClient.invalidateQueries({ queryKey: ['roles'] });
               queryClient.invalidateQueries({ queryKey: ['applications'] });
             }}
-            className="mt-2 px-4 py-2 bg-red-100 text-red-800 rounded-md hover:bg-red-200"
+            className="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors shadow-sm font-medium"
           >
             {intl.formatMessage({ id: 'roles.retry' })}
           </button>
@@ -281,57 +284,74 @@ export default function Roles() {
 
   return (
     <>
-      <div className="space-y-8">
+      <div className="space-y-6 animate-fadeIn">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">{intl.formatMessage({ id: 'roles.title' })}</h1>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-1">{intl.formatMessage({ id: 'roles.title' })}</h1>
+            <p className="text-sm text-gray-500">Define roles y asigna permisos a aplicaciones</p>
+          </div>
           <button
             onClick={() => {
               setEditingRole(null);
               reset();
               setIsAddModalOpen(true);
             }}
-            className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+            className="px-5 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 font-medium"
           >
             {intl.formatMessage({ id: 'roles.add' })}
           </button>
         </div>
 
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-gray-400" />
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <Search className="h-5 w-5 text-gray-400 group-focus-within:text-primary-500 transition-colors" />
           </div>
           <input
             type="text"
             placeholder={intl.formatMessage({ id: 'roles.search.placeholder' })}
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+            className="block w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all duration-200 shadow-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
-        <div className="space-y-4">
-          {filteredRoles.map((role) => (
-            <RoleCard
-              key={role.role_id}
-              role={role}
-              applications={applications}
-              isExpanded={expandedRoles.has(role.role_id)}
-              onToggle={() => toggleRole(role.role_id)}
-              onEdit={() => {
-                handleEditClick(role);
-                setIsAddModalOpen(true);
-              }}
-              onDelete={() => handleDeleteRole(role.role_id)}
-              onAddPermission={() => {
-                setSelectedRoleId(role.role_id);
-                setAddPermissionSuccess(false);
-                setAddPermissionError(null);
-                setIsAddPermissionModalOpen(true);
-              }}
-              onRemovePermission={(appCode) => handleRemovePermission(role.role_id, appCode)}
-            />
-          ))}
-        </div>
+        {filteredRoles.length === 0 ? (
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12">
+            <div className="flex flex-col items-center justify-center">
+              <Shield className="w-16 h-16 text-gray-300 mb-3" />
+              <p className="text-gray-500 font-medium">{searchTerm ? 'No se encontraron roles' : 'No hay roles disponibles'}</p>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filteredRoles.map((role, index) => (
+              <div
+                key={role.role_id}
+                style={{ animationDelay: `${index * 50}ms` }}
+                className="animate-fadeIn"
+              >
+                <RoleCard
+                  role={role}
+                  applications={applications}
+                  isExpanded={expandedRoles.has(role.role_id)}
+                  onToggle={() => toggleRole(role.role_id)}
+                  onEdit={() => {
+                    handleEditClick(role);
+                    setIsAddModalOpen(true);
+                  }}
+                  onDelete={() => handleDeleteRole(role.role_id)}
+                  onAddPermission={() => {
+                    setSelectedRoleId(role.role_id);
+                    setAddPermissionSuccess(false);
+                    setAddPermissionError(null);
+                    setIsAddPermissionModalOpen(true);
+                  }}
+                  onRemovePermission={(appCode) => handleRemovePermission(role.role_id, appCode)}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <AddRoleModal
