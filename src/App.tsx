@@ -1,5 +1,5 @@
 import { useAuth } from '@ctt-library/auth';
-import { Circle as XCircle } from 'lucide-react';
+import { XCircle } from 'lucide-react';
 
 import AppRoutes from './routes';
 

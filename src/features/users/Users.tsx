@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { CreditCard as Edit, Search, Trash2, Users as UsersIcon } from 'lucide-react';
+import { Edit, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
@@ -135,48 +135,39 @@ function Users() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full min-h-[400px]">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-          <div className="text-primary-600 font-medium">{intl.formatMessage({ id: 'users.loading' })}</div>
-        </div>
+      <div className="flex items-center justify-center h-full">
+        <div className="text-primary-600">{intl.formatMessage({ id: 'users.loading' })}</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-gradient-to-r from-red-50 to-red-100 p-6 rounded-xl border border-red-200 shadow-sm animate-fadeIn">
-        <p className="text-red-800 font-medium">{intl.formatMessage({ id: 'users.error' })}</p>
+      <div className="bg-red-50 p-4 rounded-md">
+        <p className="text-red-800">{intl.formatMessage({ id: 'users.error' })}</p>
       </div>
     );
   }
 
   return (
     <>
-      <div className="space-y-6 animate-fadeIn">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
-              {intl.formatMessage({ id: 'users.title' })}
-            </h1>
-            <p className="text-sm text-gray-500">Gestiona usuarios, roles y permisos del sistema</p>
-          </div>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-gray-900">{intl.formatMessage({ id: 'users.title' })}</h1>
           <button
             onClick={() => {
               setEditingUser(null);
               reset();
               setIsAddModalOpen(true);
             }}
-            className="px-6 py-3 bg-corporate-primary text-white rounded-xl hover:bg-red-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 font-semibold flex items-center gap-2"
+            className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
           >
-            <UsersIcon className="w-5 h-5" />
             {intl.formatMessage({ id: 'users.add' })}
           </button>
         </div>
 
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-gray-400" />
           </div>
           <input
@@ -184,108 +175,85 @@ function Users() {
             placeholder={intl.formatMessage({ id: 'users.search.placeholder' })}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="block w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl bg-white placeholder-gray-400 focus:outline-none focus:border-corporate-primary focus:ring-4 focus:ring-red-100 transition-all duration-200 shadow-sm text-sm"
+            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
           />
         </div>
 
-        {filteredUsers.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-16 text-center">
-            <div className="flex flex-col items-center justify-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4">
-                <UsersIcon className="w-10 h-10 text-gray-400" />
-              </div>
-              <p className="text-gray-600 font-medium text-lg mb-1">
-                {searchTerm ? 'No se encontraron usuarios' : 'No hay usuarios'}
-              </p>
-              <p className="text-gray-400 text-sm">
-                {searchTerm ? 'Intenta con otros términos de búsqueda' : 'Comienza agregando tu primer usuario'}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
-            {filteredUsers.map((user, index) => (
-              <div
-                key={user.user_id}
-                className="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 hover:border-gray-200 transition-all duration-300 overflow-hidden group animate-fadeIn"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-corporate-primary to-red-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
-                        {(user.email || user.user_id).charAt(0).toUpperCase()}
-                      </div>
+        <div className="bg-white shadow-sm rounded-lg overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{intl.formatMessage({ id: 'users.table.email' })}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{intl.formatMessage({ id: 'users.table.roles' })}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{intl.formatMessage({ id: 'users.table.hubcodes' })}</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{intl.formatMessage({ id: 'users.table.actions' })}</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredUsers.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
+                    {searchTerm ? intl.formatMessage({ id: 'users.none.search' }) : intl.formatMessage({ id: 'users.none' })}
+                  </td>
+                </tr>
+              ) : (
+                filteredUsers.map((user) => (
+                  <tr key={user.user_id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       <div>
-                        <h3 className="font-semibold text-gray-900 text-base">
-                          {user.email || user.user_id}
-                        </h3>
+                        <div className="font-medium">{user.email || user.user_id}</div>
                         {user.email && user.email !== user.user_id && (
-                          <p className="text-xs text-gray-500 font-mono">ID: {user.user_id}</p>
+                          <div className="text-xs text-gray-500">ID: {user.user_id}</div>
                         )}
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3 mb-5">
-                    <div>
-                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Roles</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {user.roles?.length ? (
-                          user.roles.map((role) => (
-                            <span
-                              key={`${user.user_id}-${role}`}
-                              className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-semibold bg-gradient-to-r from-red-50 to-pink-50 text-corporate-primary border border-red-100"
-                            >
-                              {role}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="text-sm text-gray-400 italic">Sin roles asignados</span>
-                        )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div className="flex flex-wrap gap-1">
+                        {user.roles?.map((role) => (
+                          <span
+                            key={`${user.user_id}-${role}`}
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800"
+                          >
+                            {role}
+                          </span>
+                        )) || 'No roles assigned'}
                       </div>
-                    </div>
-
-                    <div>
-                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Hub Codes</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {user.hub_codes?.length ? (
-                          user.hub_codes.map((hubCode) => (
-                            <span
-                              key={`${user.user_id}-${hubCode}`}
-                              className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono bg-gray-100 text-gray-700"
-                            >
-                              {hubCode}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="text-sm text-gray-400 italic">Sin hub codes</span>
-                        )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div className="flex flex-wrap gap-1">
+                        {user.hub_codes?.map((hubCode) => (
+                          <span
+                            key={`${user.user_id}-${hubCode}`}
+                            className="inline-flex items-center px-2 py-1 rounded text-xs font-mono bg-gray-100 text-gray-800"
+                          >
+                            {hubCode}
+                          </span>
+                        )) || 'No hub codes'}
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2 pt-4 border-t border-gray-100">
-                    <button
-                      onClick={() => handleEditClick(user)}
-                      className="flex-1 px-4 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl transition-colors duration-200 font-medium text-sm flex items-center justify-center gap-2"
-                    >
-                      <Edit className="w-4 h-4" />
-                      {intl.formatMessage({ id: 'common.edit' })}
-                    </button>
-                    <button
-                      onClick={() => handleDeleteClick(user)}
-                      className="px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition-colors duration-200 font-medium text-sm disabled:opacity-50"
-                      disabled={deleteUserMutation.isPending}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button
+                        onClick={() => handleEditClick(user)}
+                        className="text-primary-600 hover:text-primary-800 mr-3 inline-flex items-center"
+                      >
+                        <Edit className="w-4 h-4 mr-1" />
+                        {intl.formatMessage({ id: 'common.edit' })}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteClick(user)}
+                        className="text-red-600 hover:text-red-800 inline-flex items-center"
+                        disabled={deleteUserMutation.isPending}
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        {intl.formatMessage({ id: 'common.delete' })}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <AddUserModal
