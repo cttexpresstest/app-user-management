@@ -285,10 +285,12 @@ export default function Roles() {
   return (
     <>
       <div className="space-y-6 animate-fadeIn">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-1">{intl.formatMessage({ id: 'roles.title' })}</h1>
-            <p className="text-sm text-gray-500">Define roles y asigna permisos a aplicaciones</p>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
+              {intl.formatMessage({ id: 'roles.title' })}
+            </h1>
+            <p className="text-sm text-gray-500">Define roles y asigna permisos a aplicaciones del sistema</p>
           </div>
           <button
             onClick={() => {
@@ -296,34 +298,42 @@ export default function Roles() {
               reset();
               setIsAddModalOpen(true);
             }}
-            className="px-5 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 font-medium"
+            className="px-6 py-3 bg-corporate-primary text-white rounded-xl hover:bg-red-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 font-semibold flex items-center gap-2"
           >
+            <Shield className="w-5 h-5" />
             {intl.formatMessage({ id: 'roles.add' })}
           </button>
         </div>
 
-        <div className="relative group">
+        <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-gray-400 group-focus-within:text-primary-500 transition-colors" />
+            <Search className="h-5 w-5 text-gray-400" />
           </div>
           <input
             type="text"
             placeholder={intl.formatMessage({ id: 'roles.search.placeholder' })}
-            className="block w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all duration-200 shadow-sm"
+            className="block w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl bg-white placeholder-gray-400 focus:outline-none focus:border-corporate-primary focus:ring-4 focus:ring-red-100 transition-all duration-200 shadow-sm text-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
         {filteredRoles.length === 0 ? (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-16 text-center">
             <div className="flex flex-col items-center justify-center">
-              <Shield className="w-16 h-16 text-gray-300 mb-3" />
-              <p className="text-gray-500 font-medium">{searchTerm ? 'No se encontraron roles' : 'No hay roles disponibles'}</p>
+              <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4">
+                <Shield className="w-10 h-10 text-gray-400" />
+              </div>
+              <p className="text-gray-600 font-medium text-lg mb-1">
+                {searchTerm ? 'No se encontraron roles' : 'No hay roles disponibles'}
+              </p>
+              <p className="text-gray-400 text-sm">
+                {searchTerm ? 'Intenta con otros términos de búsqueda' : 'Comienza creando tu primer rol'}
+              </p>
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
             {filteredRoles.map((role, index) => (
               <div
                 key={role.role_id}

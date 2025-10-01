@@ -25,81 +25,74 @@ export default function RoleCard({
   onRemovePermission,
 }: RoleCardProps) {
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-200">
-      <div
-        className="p-5 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200 flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-50 transition-all duration-200 group"
-        onClick={onToggle}
-      >
-        <div className="flex items-center space-x-3">
-          <div className={`transition-transform duration-200 ${isExpanded ? 'rotate-0' : '-rotate-90'}`}>
-            <ChevronDown className="w-5 h-5 text-gray-500 group-hover:text-primary-600 transition-colors" />
+    <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 hover:border-gray-200 transition-all duration-300 overflow-hidden flex flex-col h-full">
+      <div className="p-6 flex-1 flex flex-col">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3 flex-1">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-corporate-primary to-red-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+              {role.role_id.charAt(0).toUpperCase()}
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-gray-900 mb-1">{role.role_id}</h3>
+              <p className="text-xs text-gray-500 font-medium">
+                {role.permissions.length} {role.permissions.length === 1 ? 'permiso' : 'permisos'}
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-lg font-bold text-gray-900">{role.role_id}</h3>
-            <span className="text-sm text-gray-500 font-medium">
-              {role.permissions.length} {role.permissions.length === 1 ? 'aplicación' : 'aplicaciones'} asignada{role.permissions.length === 1 ? '' : 's'}
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit();
-            }}
-            className="text-primary-600 hover:text-primary-800 inline-flex items-center px-3 py-1.5 rounded-lg hover:bg-primary-50 transition-all duration-200 font-medium"
+            onClick={onToggle}
+            className={`p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all duration-200 ${isExpanded ? '' : 'rotate-180'}`}
           >
-            <Edit className="w-4 h-4 mr-1.5" />
-            Editar
+            <ChevronDown className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
+
+        {isExpanded && (
+          <div className="flex-1 animate-fadeIn">
+            <div className="mb-4">
+              <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Aplicaciones Asignadas</h4>
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {role.permissions.map((permission) => (
+                  <RolePermission
+                    key={`${role.role_id}-${permission.app_code}`}
+                    permission={permission}
+                    application={applications.find(app => app.app_code === permission.app_code)}
+                    onRemove={() => onRemovePermission(permission.app_code)}
+                  />
+                ))}
+                {role.permissions.length === 0 && (
+                  <div className="p-6 text-center border-2 border-dashed border-gray-200 rounded-xl bg-gray-50">
+                    <Plus className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                    <p className="text-sm text-gray-400">Sin aplicaciones asignadas</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className={`flex gap-2 ${isExpanded ? 'mt-4 pt-4 border-t border-gray-100' : ''}`}>
+          <button
+            onClick={onAddPermission}
+            className="flex-1 px-4 py-2.5 bg-gradient-to-r from-red-50 to-pink-50 hover:from-red-100 hover:to-pink-100 text-corporate-primary rounded-xl transition-all duration-200 font-medium text-sm flex items-center justify-center gap-2 border border-red-100"
+          >
+            <Plus className="w-4 h-4" />
+            Añadir
           </button>
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete();
-            }}
-            className="text-red-600 hover:text-red-700 inline-flex items-center px-3 py-1.5 rounded-lg hover:bg-red-50 transition-all duration-200 font-medium"
+            onClick={onEdit}
+            className="px-4 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl transition-colors duration-200 font-medium text-sm"
           >
-            <Trash2 className="w-4 h-4 mr-1.5" />
-            Eliminar
+            <Edit className="w-4 h-4" />
+          </button>
+          <button
+            onClick={onDelete}
+            className="px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition-colors duration-200 font-medium text-sm"
+          >
+            <Trash2 className="w-4 h-4" />
           </button>
         </div>
       </div>
-
-      {isExpanded && (
-        <div className="p-5 bg-white animate-slideInRight">
-          <div className="flex justify-between items-center mb-4">
-            <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Permisos de Aplicaciones</h4>
-            <button
-              onClick={onAddPermission}
-              className="flex items-center px-4 py-2 text-sm bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700 rounded-lg hover:from-primary-100 hover:to-primary-200 font-semibold shadow-sm hover:shadow transition-all duration-200 border border-primary-200"
-            >
-              <Plus className="w-4 h-4 mr-1.5" />
-              Añadir Aplicación
-            </button>
-          </div>
-          <div className="space-y-3">
-            {role.permissions.map((permission) => (
-              <RolePermission
-                key={`${role.role_id}-${permission.app_code}`}
-                permission={permission}
-                application={applications.find(app => app.app_code === permission.app_code)}
-                onRemove={() => onRemovePermission(permission.app_code)}
-              />
-            ))}
-            {role.permissions.length === 0 && (
-              <div className="p-8 text-center border-2 border-dashed border-gray-300 rounded-xl bg-gray-50">
-                <div className="flex flex-col items-center">
-                  <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mb-3">
-                    <Plus className="w-6 h-6 text-gray-400" />
-                  </div>
-                  <p className="text-gray-500 font-medium">No hay aplicaciones asignadas a este rol</p>
-                  <p className="text-sm text-gray-400 mt-1">Haz clic en "Añadir Aplicación" para empezar</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -1,5 +1,8 @@
 @import "tailwindcss";
+@import '@ctt-library/styles';
 @import './styles/animations.css';
+@source "../node_modules/@ctt-library/header";
+@source "../node_modules/@ctt-library/alert";
 
 * {
   box-sizing: border-box;
