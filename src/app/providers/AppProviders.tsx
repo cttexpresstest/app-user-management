@@ -1,4 +1,4 @@
-import { AuthProvider } from '@ctt-library/auth';
+// import { AuthProvider } from '@ctt-library/auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { IntlProvider } from 'react-intl';
@@ -16,12 +16,12 @@ export default function AppProviders({ children }: AppProvidersProps) {
   const locale = 'es';
   const messages = getMessages(locale);
   return (
-    <AuthProvider>
+    // <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <IntlProvider locale={locale} messages={messages}>
           <Router>{children}</Router>
         </IntlProvider>
       </QueryClientProvider>
-    </AuthProvider>
+    // </AuthProvider>
   );
 }
