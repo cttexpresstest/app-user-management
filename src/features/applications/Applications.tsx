@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Edit, Search, Trash2, ExternalLink, Power, Plus } from 'lucide-react';
+import { CreditCard as Edit, Search, Trash2, ExternalLink, Power, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
