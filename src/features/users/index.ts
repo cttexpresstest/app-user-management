@@ -1,1 +1,1 @@
-export { default as Users } from './Users.modern';
+export { default as Users } from './Users';

@@ -1,1 +1,1 @@
-export { default as Roles } from './Roles.modern';
+export { default as Roles } from './Roles';

@@ -1,1 +1,1 @@
-export { default as Applications } from './Applications.modern';
+export { default as Applications } from './Applications';
