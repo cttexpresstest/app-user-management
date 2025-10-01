@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Edit, Search, Trash2 } from 'lucide-react';
+import { Edit, Search, Trash2, ExternalLink, Power, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
@@ -119,15 +119,18 @@ function Applications() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-primary-600">{intl.formatMessage({ id: 'applications.loading' })}</div>
+      <div className="flex items-center justify-center h-64">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+          <p className="text-slate-600">{intl.formatMessage({ id: 'applications.loading' })}</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 p-4 rounded-md">
+      <div className="bg-red-50 border border-red-200 rounded-xl p-6">
         <p className="text-red-800">{intl.formatMessage({ id: 'applications.error' })}</p>
       </div>
     );
@@ -136,109 +139,102 @@ function Applications() {
   return (
     <>
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">{intl.formatMessage({ id: 'applications.title' })}</h1>
+        <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">{intl.formatMessage({ id: 'applications.title' })}</h1>
+            <p className="text-slate-500 mt-1">Gestiona las aplicaciones del sistema</p>
+          </div>
           <button
             onClick={() => {
               setEditingApplication(null);
               reset();
               setIsAddModalOpen(true);
             }}
-            className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-200 font-medium"
           >
+            <Plus className="w-5 h-5" />
             {intl.formatMessage({ id: 'applications.add' })}
           </button>
         </div>
 
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-gray-400" />
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <Search className="h-5 w-5 text-slate-400" />
           </div>
           <input
             type="text"
             placeholder={intl.formatMessage({ id: 'applications.search.placeholder' })}
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+            className="block w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
-        <div className="bg-white shadow-sm rounded-lg overflow-x-auto">
-          <table className="w-full divide-y divide-gray-200" style={{ tableLayout: 'fixed', minWidth: '800px' }}>
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ width: '25%' }}>
-                  {intl.formatMessage({ id: 'applications.table.name' })}
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ width: '20%' }}>
-                  {intl.formatMessage({ id: 'applications.table.code' })}
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ width: '10%' }}>
-                  {intl.formatMessage({ id: 'applications.table.status' })}
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ width: '25%' }}>
-                  {intl.formatMessage({ id: 'applications.table.url' })}
-                </th>
-                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ width: '20%' }}>
-                  {intl.formatMessage({ id: 'applications.table.actions' })}
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredApplications?.map((app) => (
-                <tr key={app.app_code}>
-                  <td className="px-3 py-4 text-sm" style={{ width: '25%' }}>
-                    <div className="font-medium text-gray-900 truncate">{app.name}</div>
-                    <div className="text-gray-500 truncate text-xs">{app.description}</div>
-                  </td>
-                  <td className="px-3 py-4 text-sm text-gray-500" style={{ width: '20%' }}>
-                    <div className="truncate">{app.app_code}</div>
-                  </td>
-                  <td className="px-3 py-4" style={{ width: '10%' }}>
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      app.status === 'active'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {app.status}
-                    </span>
-                  </td>
-                  <td className="px-3 py-4 text-sm text-gray-500" style={{ width: '25%' }}>
-                    <a
-                      href={app.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary-600 hover:text-primary-800 truncate block"
-                      title={app.url}
-                    >
-                      {app.url}
-                    </a>
-                  </td>
-                  <td className="px-3 py-4 text-right text-sm font-medium" style={{ width: '20%' }}>
-                    <div className="flex justify-end space-x-1">
-                      <button
-                        onClick={() => handleEditClick(app)}
-                        className="text-primary-600 hover:text-primary-800 inline-flex items-center px-2 py-1 rounded hover:bg-primary-50 text-xs"
-                        title="Edit application"
-                      >
-                        <Edit className="w-4 h-4 mr-1" />
-                        {intl.formatMessage({ id: 'applications.action.edit' })}
-                      </button>
-                      <button
-                        onClick={() => handleDeleteClick(app)}
-                        className="text-red-600 hover:text-red-800 inline-flex items-center px-2 py-1 rounded hover:bg-red-50 text-xs"
-                        disabled={deleteApplicationMutation.isPending}
-                        title="Delete application"
-                      >
-                        <Trash2 className="w-4 h-4 mr-1" />
-                        {intl.formatMessage({ id: 'applications.action.delete' })}
-                      </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {filteredApplications?.map((app) => (
+            <div
+              key={app.app_code}
+              className="group bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-200 hover:-translate-y-1"
+            >
+              <div className="p-6 space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className={`w-2 h-2 rounded-full ${
+                        app.status === 'active' ? 'bg-green-500' : 'bg-slate-400'
+                      }`} />
+                      <span className={`text-xs font-medium ${
+                        app.status === 'active' ? 'text-green-700' : 'text-slate-600'
+                      }`}>
+                        {app.status === 'active' ? 'Activa' : 'Inactiva'}
+                      </span>
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <h3 className="font-semibold text-lg text-slate-900 mb-1">{app.name}</h3>
+                    <p className="text-xs font-mono text-slate-500 bg-slate-50 px-2 py-1 rounded inline-block">
+                      {app.app_code}
+                    </p>
+                  </div>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => handleEditClick(app)}
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                      title="Editar"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(app)}
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                      disabled={deleteApplicationMutation.isPending}
+                      title="Eliminar"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <p className="text-sm text-slate-600 line-clamp-2 min-h-[2.5rem]">
+                  {app.description}
+                </p>
+
+                <a
+                  href={app.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium group/link"
+                >
+                  <ExternalLink className="w-4 h-4 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
+                  <span className="truncate">{app.url}</span>
+                </a>
+              </div>
+
+              <div className={`h-1 ${
+                app.status === 'active'
+                  ? 'bg-gradient-to-r from-green-400 to-emerald-500'
+                  : 'bg-slate-200'
+              }`} />
+            </div>
+          ))}
         </div>
       </div>
 

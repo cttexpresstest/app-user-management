@@ -1,4 +1,10 @@
 @import "tailwindcss";
-@import '@ctt-library/styles';
-@source "../node_modules/@ctt-library/header";
-@source "../node_modules/@ctt-library/alert";
+
+@layer base {
+  * {
+    @apply border-slate-200;
+  }
+  body {
+    @apply antialiased;
+  }
+}

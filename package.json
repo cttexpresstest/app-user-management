@@ -11,21 +11,13 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@ctt-library/auth": "0.0.22",
-    "@ctt-library/header": "^0.0.17",
-    "@ctt-library/modal": "0.0.6",
-    "@ctt-library/styles": "0.0.6",
     "@tanstack/react-query": "^5.90.2",
-    "axios": "^1.12.2",
-    "formik": "^2.4.6",
     "lucide-react": "^0.544.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.63.0",
     "react-intl": "^7.1.11",
-    "react-router-dom": "^7.9.3",
-    "yup": "^1.7.1",
-    "zustand": "^5.0.8"
+    "react-router-dom": "^7.9.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
