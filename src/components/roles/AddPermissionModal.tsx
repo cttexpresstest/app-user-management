@@ -1,5 +1,5 @@
 import React from 'react';
-import { X as CloseIcon, CheckCircle2, AlertCircle } from 'lucide-react';
+import { X as CloseIcon, CircleCheck as CheckCircle2, CircleAlert as AlertCircle } from 'lucide-react';
 import { UseFormRegister } from 'react-hook-form';
 import type { Application } from '../../types';
 

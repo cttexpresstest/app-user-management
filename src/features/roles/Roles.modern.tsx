@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { ChevronDown, ChevronUp, Plus, Search, Shield, Trash2, Edit, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, Plus, Search, Shield, Trash2, CreditCard as Edit, X } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
